@@ -1,0 +1,12 @@
+#hi{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 6px;
+}
+
+#we{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 3px;
+    text-align: center;
+}
