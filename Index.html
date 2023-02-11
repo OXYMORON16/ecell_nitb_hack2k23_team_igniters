@@ -44,6 +44,21 @@
 	<script src="https://web.archive.org/web/20180819202235/http://seanhalpin.io/assets/js/modernizr.js"></script>
 	<link rel="stylesheet" href="style.css">
 	<script src="https://kit.fontawesome.com/fbc3b00560.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+		integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+
+	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+		integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+	<style>
+		#map {
+			height: 500px
+		}
+	</style>
+	<style>
+		#map {
+			width: 1500px;
+		}
+	</style>
 
 
 
@@ -89,28 +104,30 @@
 								<li><a class="active" href="#">About</a></li>
 								<li><a href="">Blog</a></li>
 								<li><a href="">FAQ's</a></li>
-								<li><a href=""><script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-									<script src="push.min.js"></script>
-									<script src="serviceWorker.min.js"></script>
-									<script>
-									function start(){
-										Push.create("Hello world!", {
-											body: "How's it hangin'?",
-											icon: 'https://previews.123rf.com/images/coolvectorstock/coolvectorstock1808/coolvectorstock180802556/106911764-blood-sample-vector-icon-isolated-on-transparent-background-blood-sample-logo-concept.jpg',
-											timeout: 4000,
-											onClick: function () {
-												window.focus();
-												this.close();
+								<li><a href="">
+										<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+										<script src="push.min.js"></script>
+										<script src="serviceWorker.min.js"></script>
+										<script>
+											function start() {
+												Push.create("Hello world!", {
+													body: "How's it hangin'?",
+													icon: 'https://previews.123rf.com/images/coolvectorstock/coolvectorstock1808/coolvectorstock180802556/106911764-blood-sample-vector-icon-isolated-on-transparent-background-blood-sample-logo-concept.jpg',
+													timeout: 4000,
+													onClick: function () {
+														window.focus();
+														this.close();
+													}
+												});
 											}
-										});
-									}
-									
-									function clear(){
-										Push.clear();
-									}
-									</script>
-									<a href="javascript:void(0)" onclick="start()"><i class="fa-solid fa-bell"></i></a></li></a>
-									<a href="javascript:void(0)" onclick="clear()">Clear</a>
+
+											function clear() {
+												Push.clear();
+											}
+										</script>
+										<a href="javascript:void(0)" onclick="start()"><i
+												class="fa-solid fa-bell"></i></a></li></a>
+								<a href="javascript:void(0)" onclick="clear()">Clear</a>
 
 
 							</ul>
@@ -152,7 +169,7 @@
 											<figure class="transistion">
 
 												<!-- <img src=""> -->
-												<h1>WE WORK FOR<br>NATURE!!</h1>
+												<h1 style="font-size: 100px;">WE WORK FOR<br>NATURE!!</h1>
 
 											</figure>
 
@@ -394,21 +411,16 @@
 				<div class="col-md-12">
 
 					<article>
-
-
 						<header>
-
 							<h2>We can help.</h2>
-
-							<h3>We are here to treat your Garbage right in Your doorstep!</h3>
-
+							<h3>We are here to treat your Garbage right!! </h3>
 						</header>
+
 
 
 						<p class="btn-hldr">
 
-							<a href="@gmail.com||sean.e.halpin" class="main-btn email-lnk">Toe Kachra <i
-									class="email"></i></a>
+							<a href="" class="main-btn email-lnk">Toe Kachra<i class="email"></i></a>
 
 						</p>
 
@@ -424,6 +436,8 @@
 
 	</section>
 
+	<div id="map"> </div>
+
 
 
 	<footer>
@@ -437,12 +451,12 @@
 					<ul class="footer-list">
 
 						<li><a
-								href="">dribbble</a>
+								href="https://web.archive.org/web/20180819202235/http://dribbble.com/seanehalpin">dribbble</a>
 						</li>
 						<li><a
-								href="">twitter</a>
+								href="https://web.archive.org/web/20180819202235/https://twitter.com/seanehalpin">twitter</a>
 						</li>
-						<li><a href="" class="email-lnk">hire me</a></li>
+						<li><a href="@gmail.com||sean.e.halpin" class="email-lnk">hire me</a></li>
 
 					</ul>
 
@@ -486,6 +500,60 @@
 		ga('create', 'UA-45121803-1', 'seanhalpin.io');
 		ga('send', 'pageview');
 
+	</script>
+	<script>
+		const map = L.map('map');
+		// Initializes map
+	
+		map.setView([51.505, -0.09], 13);
+		// Sets initial coordinates and zoom level
+	
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '© OpenStreetMap'
+		}).addTo(map);
+		// Sets map data source and associates with map
+	
+		let marker, circle, zoomed;
+	
+		navigator.geolocation.watchPosition(success, error);
+	
+		function success(pos) {
+	
+			const lat = pos.coords.latitude;
+			const lng = pos.coords.longitude;
+			const accuracy = pos.coords.accuracy;
+	
+			if (marker) {
+				map.removeLayer(marker);
+				map.removeLayer(circle);
+			}
+			// Removes any existing marker and circule (new ones about to be set)
+	
+			marker = L.marker([lat, lng]).addTo(map);
+			circle = L.circle([lat, lng], { radius: accuracy }).addTo(map);
+			// Adds marker to the map and a circle for accuracy
+	
+			if (!zoomed) {
+				zoomed = map.fitBounds(circle.getBounds());
+			}
+			// Set zoom to boundaries of accuracy circle
+	
+			map.setView([lat, lng]);
+			// Set map focus to current user position
+	
+		}
+	
+		function error(err) {
+	
+			if (err.code === 1) {
+				alert("Please allow geolocation access");
+			} else {
+				alert("Cannot get current location");
+			}
+	
+		}
+	
 	</script>
 </body>
 
