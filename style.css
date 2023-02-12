@@ -4,6 +4,13 @@
     padding: 6px;
 }
 
+.ccd{
+    width: 800px;
+     margin-left: 200px;
+     font-size: larger;
+    
+}
+
 #autoPressedButton{
     display: none;
 }
